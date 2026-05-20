@@ -38,8 +38,24 @@ function usage() {
 }
 
 function pieceImgUrl(piece) {
-  const color = piece === piece.toUpperCase() ? 'w' : 'b';
-  return `https://lichess1.org/assets/piece/cburnett/${color}${piece.toUpperCase()}.svg`;
+  return pieceSvgDataUri(piece);
+}
+
+function pieceSvgDataUri(piece) {
+  const isWhite = piece === piece.toUpperCase();
+  const label = piece.toUpperCase();
+
+  const fill = isWhite ? '#f7f7fb' : '#0f1220';
+  const stroke = isWhite ? '#0f1220' : '#00bcd4';
+  const text = isWhite ? '#0f1220' : '#00bcd4';
+
+  const svg = `<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 64 64">
+  <circle cx="32" cy="32" r="24" fill="${fill}" stroke="${stroke}" stroke-width="3"/>
+  <text x="32" y="40" text-anchor="middle" font-size="26" font-family="system-ui, -apple-system, Segoe UI, Roboto, sans-serif" font-weight="800" fill="${text}">${label}</text>
+</svg>`;
+
+  return `data:image/svg+xml;charset=utf-8,${encodeURIComponent(svg)}`;
 }
 
 function buildHtml({ board, flip, title }) {
