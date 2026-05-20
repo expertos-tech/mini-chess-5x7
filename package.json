@@ -1,0 +1,32 @@
+{
+  "name": "simple-chess",
+  "version": "1.0.0",
+  "description": "5x8 chess variant - CLI game with minimal AI",
+  "main": "src/cli.js",
+  "scripts": {
+    "start": "node src/cli.js",
+    "start:cli": "node src/cli.js",
+    "start:browser": "node src/cli.js --browser",
+    "build:docs": "npm run build:docs:readme && npm run build:docs:board",
+    "build:docs:board": "node scripts/build-docs-board.js",
+    "build:docs:readme": "node scripts/build-docs-index.js",
+    "test": "node --test",
+    "lint": "eslint .",
+    "format": "prettier . --write",
+    "format:check": "prettier . --check",
+    "check": "npm run lint && npm test && npm run format:check"
+  },
+  "engines": {
+    "node": ">=24"
+  },
+  "dependencies": {
+    "ws": "^8.0.0"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.0.0",
+    "eslint": "^9.0.0",
+    "globals": "^16.0.0",
+    "marked": "^16.0.0",
+    "prettier": "^3.0.0"
+  }
+}

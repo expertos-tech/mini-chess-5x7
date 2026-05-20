@@ -1,0 +1,743 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Simple Chess 5x8</title>
+    <style>
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+
+      body {
+        background: #1a1a2e;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-height: 100vh;
+        font-family: 'Segoe UI', Tahoma, sans-serif;
+        color: #eee;
+      }
+
+      .app {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 20px;
+      }
+
+      h1 {
+        font-size: 1.6rem;
+        letter-spacing: 3px;
+        color: #e0c88a;
+        text-transform: uppercase;
+      }
+
+      /* ── Three-column game layout ─────────────────────────── */
+      .game-layout {
+        display: flex;
+        gap: 16px;
+        align-items: flex-start;
+      }
+
+      .side-panel {
+        width: 190px;
+        background: #16213e;
+        border: 1px solid #2a2a4a;
+        border-radius: 10px;
+        padding: 12px;
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        min-height: 590px;
+        box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4);
+      }
+
+      .panel-title {
+        font-size: 0.75rem;
+        font-weight: 700;
+        letter-spacing: 2px;
+        text-transform: uppercase;
+        color: #e0c88a;
+        padding-bottom: 8px;
+        border-bottom: 1px solid #2a2a4a;
+      }
+
+      /* ── Move history ─────────────────────────────────────── */
+      .move-list {
+        flex: 1;
+        overflow-y: auto;
+        display: flex;
+        flex-direction: column;
+        gap: 2px;
+        max-height: 530px;
+        scrollbar-width: thin;
+        scrollbar-color: #333 transparent;
+      }
+
+      .move-row {
+        display: grid;
+        grid-template-columns: 28px 1fr 1fr;
+        gap: 4px;
+        font-size: 0.82rem;
+        line-height: 1.8;
+        border-radius: 4px;
+        padding: 0 4px;
+      }
+      .move-row:hover {
+        background: #1e2d50;
+      }
+
+      .move-num {
+        color: #555;
+        font-size: 0.75rem;
+        padding-top: 2px;
+      }
+      .move-white {
+        color: #ddd;
+        font-weight: 600;
+        font-family: monospace;
+      }
+      .move-black {
+        color: #8a9abc;
+        font-family: monospace;
+      }
+
+      /* ── Captures ─────────────────────────────────────────── */
+      .capture-section {
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+      }
+
+      .capture-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        font-size: 0.72rem;
+        color: #8a9abc;
+        letter-spacing: 0.5px;
+      }
+
+      .score-tag {
+        background: #e0c88a22;
+        color: #e0c88a;
+        border-radius: 4px;
+        padding: 1px 6px;
+        font-weight: 700;
+        font-size: 0.72rem;
+      }
+
+      .capture-pieces {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 2px;
+        min-height: 36px;
+      }
+
+      .cap-piece {
+        width: 34px;
+        height: 34px;
+      }
+
+      .capture-divider {
+        border: none;
+        border-top: 1px solid #2a2a4a;
+        margin: 4px 0;
+      }
+
+      .advantage-bar {
+        font-size: 0.78rem;
+        color: #a8e6cf;
+        text-align: center;
+        padding: 4px;
+        background: #1e2d50;
+        border-radius: 6px;
+      }
+
+      /* ── Board area ───────────────────────────────────────── */
+      .center-area {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 12px;
+      }
+
+      .board-wrapper {
+        display: flex;
+        gap: 8px;
+        align-items: flex-start;
+      }
+
+      .rank-labels {
+        display: flex;
+        flex-direction: column;
+      }
+
+      .rank-label {
+        height: 72px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 22px;
+        color: #8a8a9a;
+        font-size: 0.8rem;
+        font-weight: 600;
+      }
+
+      .board-col {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 6px;
+      }
+
+      .board {
+        display: grid;
+        grid-template-columns: repeat(5, 72px);
+        grid-template-rows: repeat(8, 72px);
+        border: 3px solid #333;
+        border-radius: 4px;
+        overflow: hidden;
+        box-shadow: 0 12px 40px rgba(0, 0, 0, 0.7);
+      }
+
+      .square {
+        width: 72px;
+        height: 72px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        position: relative;
+        transition: filter 0.1s;
+      }
+      .square:hover {
+        filter: brightness(1.1);
+      }
+      .square.light {
+        background: #f0d9b5;
+      }
+      .square.dark {
+        background: #b58863;
+      }
+      .square.selected {
+        background: #7fc97f !important;
+      }
+      .square.last-from {
+        background: #cdd26a !important;
+      }
+      .square.last-to {
+        background: #aaba45 !important;
+      }
+
+      .square.valid-move::after {
+        content: '';
+        position: absolute;
+        width: 26px;
+        height: 26px;
+        background: rgba(20, 85, 30, 0.4);
+        border-radius: 50%;
+        pointer-events: none;
+        z-index: 2;
+      }
+      .square.valid-capture::after {
+        content: '';
+        position: absolute;
+        width: 68px;
+        height: 68px;
+        border: 6px solid rgba(20, 85, 30, 0.4);
+        border-radius: 50%;
+        pointer-events: none;
+        z-index: 2;
+      }
+
+      .square img {
+        width: 64px;
+        height: 64px;
+        pointer-events: none;
+        user-select: none;
+        z-index: 1;
+        display: block;
+      }
+
+      .file-labels {
+        display: flex;
+        width: 360px;
+      }
+      .file-label {
+        width: 72px;
+        text-align: center;
+        color: #8a8a9a;
+        font-size: 0.8rem;
+        font-weight: 600;
+      }
+
+      /* ── Status bar ───────────────────────────────────────── */
+      .status-bar {
+        display: flex;
+        align-items: center;
+        gap: 16px;
+        padding: 12px 24px;
+        background: #16213e;
+        border-radius: 10px;
+        border: 1px solid #2a2a4a;
+        width: 100%;
+        justify-content: space-between;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+      }
+
+      .status-text {
+        font-size: 1rem;
+        color: #e0c88a;
+        font-weight: 500;
+      }
+      .status-text.check {
+        color: #ff6b6b;
+        font-weight: 700;
+      }
+      .status-text.gameover {
+        color: #a8e6cf;
+        font-weight: 700;
+      }
+      .status-text.thinking {
+        color: #8aa8e0;
+        font-style: italic;
+      }
+
+      .btn {
+        background: #e0c88a;
+        color: #1a1a2e;
+        border: none;
+        padding: 8px 18px;
+        border-radius: 7px;
+        cursor: pointer;
+        font-size: 0.9rem;
+        font-weight: 700;
+        letter-spacing: 0.5px;
+        transition:
+          opacity 0.15s,
+          transform 0.1s;
+      }
+      .btn:hover {
+        opacity: 0.85;
+      }
+      .btn:active {
+        transform: scale(0.97);
+      }
+
+      .connecting {
+        color: #555;
+        font-size: 1rem;
+        letter-spacing: 1px;
+      }
+
+      .side-picker {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+        align-items: center;
+        background: #16213e;
+        border: 1px solid #2a2a4a;
+        border-radius: 10px;
+        padding: 18px 22px;
+        box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4);
+        width: min(420px, 92vw);
+      }
+
+      .side-picker-title {
+        font-size: 0.85rem;
+        font-weight: 800;
+        letter-spacing: 2px;
+        text-transform: uppercase;
+        color: #e0c88a;
+      }
+
+      .side-picker-actions {
+        display: flex;
+        gap: 10px;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="app">
+      <h1>Simple Chess 5×8</h1>
+
+      <div v-if="!sideSelected" class="side-picker">
+        <div class="side-picker-title">Play as</div>
+        <div class="side-picker-actions">
+          <button class="btn" @click="chooseSide('white')">White</button>
+          <button class="btn" @click="chooseSide('black')">Black</button>
+        </div>
+      </div>
+
+      <div v-if="sideSelected && !connected" class="connecting">Connecting to server...</div>
+
+      <div v-if="connected" class="game-layout">
+        <!-- Left panel: move history -->
+        <div class="side-panel">
+          <div class="panel-title">History</div>
+          <div class="move-list" ref="moveListEl">
+            <div v-for="pair in movePairs" :key="pair.num" class="move-row">
+              <span class="move-num">{{ pair.num }}.</span>
+              <span class="move-white">{{ pair.white }}</span>
+              <span class="move-black">{{ pair.black || '' }}</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Center: board + status -->
+        <div class="center-area">
+          <div class="board-wrapper">
+            <div class="rank-labels">
+              <div v-for="rank in ranks" :key="rank" class="rank-label">{{ rank }}</div>
+            </div>
+            <div class="board-col">
+              <div class="board">
+                <div
+                  v-for="(piece, idx) in flatBoard"
+                  :key="idx"
+                  class="square"
+                  :class="squareClass(idx)"
+                  @click="handleClick(idx)"
+                >
+                  <img v-if="piece !== '.'" :src="pieceImg(piece)" draggable="false" />
+                </div>
+              </div>
+              <div class="file-labels">
+                <div v-for="f in files" :key="f" class="file-label">{{ f }}</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="status-bar">
+            <span class="status-text" :class="statusClass">{{ statusText }}</span>
+            <button class="btn" @click="reset">New game</button>
+          </div>
+        </div>
+
+        <!-- Right panel: captured pieces -->
+        <div class="side-panel">
+          <div class="panel-title">Captures</div>
+
+          <div v-if="advantage" class="advantage-bar">{{ advantage }}</div>
+
+          <div class="capture-section">
+            <div class="capture-header">
+              <span>You captured</span>
+              <span v-if="scoreYou > 0" class="score-tag">+{{ scoreYou }}</span>
+            </div>
+            <div class="capture-pieces">
+              <img
+                v-for="(p, i) in capturedYou"
+                :key="i"
+                :src="pieceImg(p)"
+                class="cap-piece"
+                draggable="false"
+              />
+            </div>
+          </div>
+
+          <hr class="capture-divider" />
+
+          <div class="capture-section">
+            <div class="capture-header">
+              <span>AI captured</span>
+              <span v-if="scoreAi > 0" class="score-tag">+{{ scoreAi }}</span>
+            </div>
+            <div class="capture-pieces">
+              <img
+                v-for="(p, i) in capturedAi"
+                :key="i"
+                :src="pieceImg(p)"
+                class="cap-piece"
+                draggable="false"
+              />
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script type="module">
+      import {
+        createApp,
+        ref,
+        computed,
+        watch,
+        nextTick,
+      } from 'https://cdn.jsdelivr.net/npm/vue@3/dist/vue.esm-browser.prod.js';
+
+      createApp({
+        setup() {
+          const board = ref([]);
+          const whiteTurn = ref(true);
+          const status = ref('ongoing');
+          const lastMove = ref(null);
+          const inCheck = ref(false);
+          const selectedFrom = ref(null);
+          const validMoves = ref([]);
+          const aiThinking = ref(false);
+          const connected = ref(false);
+          const playerSide = ref(null); // 'white' | 'black'
+          const capturedByWhite = ref([]);
+          const capturedByBlack = ref([]);
+          const moveHistory = ref([]);
+          const scoreWhite = ref(0);
+          const scoreBlack = ref(0);
+          const moveListEl = ref(null);
+
+          let ws = null;
+
+          const sideSelected = computed(
+            () => playerSide.value === 'white' || playerSide.value === 'black'
+          );
+          const playerIsWhite = computed(() => playerSide.value === 'white');
+          const playerToMove = computed(() =>
+            playerIsWhite.value ? whiteTurn.value : !whiteTurn.value
+          );
+
+          function displayToInternal(row, col) {
+            if (playerIsWhite.value) return { row, col };
+            return { row: 7 - row, col: 4 - col };
+          }
+
+          function internalToDisplay(row, col) {
+            if (playerIsWhite.value) return { row, col };
+            return { row: 7 - row, col: 4 - col };
+          }
+
+          function chooseSide(side) {
+            playerSide.value = side;
+            ws = new WebSocket(`ws://${location.host}?side=${encodeURIComponent(side)}`);
+            ws.onopen = () => {
+              connected.value = true;
+            };
+            ws.onclose = () => {
+              connected.value = false;
+            };
+
+            ws.onmessage = (e) => {
+              const msg = JSON.parse(e.data);
+              if (msg.type === 'state') {
+                board.value = msg.board;
+                whiteTurn.value = msg.whiteTurn;
+                status.value = msg.status;
+                lastMove.value = msg.lastMove;
+                inCheck.value = msg.inCheck || false;
+                capturedByWhite.value = msg.capturedByWhite || [];
+                capturedByBlack.value = msg.capturedByBlack || [];
+                moveHistory.value = msg.moveHistory || [];
+                scoreWhite.value = msg.scoreWhite || 0;
+                scoreBlack.value = msg.scoreBlack || 0;
+                aiThinking.value = false;
+                selectedFrom.value = null;
+                validMoves.value = [];
+              } else if (msg.type === 'validMoves') {
+                selectedFrom.value = { row: msg.fromRow, col: msg.fromCol };
+                validMoves.value = msg.moves;
+              }
+            };
+          }
+
+          // Auto-scroll history to bottom on new moves
+          watch(
+            moveHistory,
+            () => {
+              nextTick(() => {
+                if (moveListEl.value) {
+                  moveListEl.value.scrollTop = moveListEl.value.scrollHeight;
+                }
+              });
+            },
+            { deep: true }
+          );
+
+          const files = ['a', 'b', 'c', 'd', 'e'];
+          const ranks = computed(() =>
+            playerIsWhite.value ? [8, 7, 6, 5, 4, 3, 2, 1] : [1, 2, 3, 4, 5, 6, 7, 8]
+          );
+
+          const flatBoard = computed(() => {
+            if (!board.value.length) return [];
+            const out = [];
+            for (let r = 0; r < 8; r++) {
+              for (let c = 0; c < 5; c++) {
+                const { row, col } = displayToInternal(r, c);
+                out.push(board.value[row]?.[col] ?? '.');
+              }
+            }
+            return out;
+          });
+
+          const movePairs = computed(() => {
+            const pairs = [];
+            const hist = moveHistory.value;
+            for (let i = 0; i < hist.length; i += 2) {
+              pairs.push({
+                num: hist[i].num,
+                white: hist[i].move,
+                black: hist[i + 1]?.move || null,
+              });
+            }
+            return pairs;
+          });
+
+          const advantage = computed(() => {
+            const diff = playerIsWhite.value
+              ? scoreWhite.value - scoreBlack.value
+              : scoreBlack.value - scoreWhite.value;
+            if (diff > 0) return `You +${diff} pts`;
+            if (diff < 0) return `AI +${Math.abs(diff)} pts`;
+            return '';
+          });
+
+          const rowCol = (idx) => ({ row: Math.floor(idx / 5), col: idx % 5 });
+
+          function isValidTarget(row, col) {
+            const internal = displayToInternal(row, col);
+            return validMoves.value.some(
+              (m) => m.toRow === internal.row && m.toCol === internal.col
+            );
+          }
+          function hasPiece(row, col) {
+            const internal = displayToInternal(row, col);
+            return board.value[internal.row]?.[internal.col] !== '.';
+          }
+
+          function squareClass(idx) {
+            const { row, col } = rowCol(idx);
+            const classes = [(row + col) % 2 === 0 ? 'light' : 'dark'];
+            const sf = selectedFrom.value;
+            if (sf) {
+              const sfDisplay = internalToDisplay(sf.row, sf.col);
+              if (sfDisplay.row === row && sfDisplay.col === col) classes.push('selected');
+            }
+            if (lastMove.value) {
+              const lm = lastMove.value;
+              const fromD = internalToDisplay(lm.fromRow, lm.fromCol);
+              const toD = internalToDisplay(lm.toRow, lm.toCol);
+              if (row === fromD.row && col === fromD.col) classes.push('last-from');
+              if (row === toD.row && col === toD.col) classes.push('last-to');
+            }
+            if (isValidTarget(row, col)) {
+              classes.push(hasPiece(row, col) ? 'valid-capture' : 'valid-move');
+            }
+            return classes;
+          }
+
+          function pieceImg(piece) {
+            const color = piece === piece.toUpperCase() ? 'w' : 'b';
+            return `https://lichess1.org/assets/piece/cburnett/${color}${piece.toUpperCase()}.svg`;
+          }
+
+          function handleClick(idx) {
+            if (status.value !== 'ongoing' || aiThinking.value || !playerToMove.value) return;
+            const { row, col } = rowCol(idx);
+            const internal = displayToInternal(row, col);
+            const piece = board.value[internal.row]?.[internal.col];
+
+            if (selectedFrom.value && isValidTarget(row, col)) {
+              const { row: fromRow, col: fromCol } = selectedFrom.value;
+              aiThinking.value = true;
+              ws.send(
+                JSON.stringify({
+                  type: 'move',
+                  fromRow,
+                  fromCol,
+                  toRow: internal.row,
+                  toCol: internal.col,
+                })
+              );
+              return;
+            }
+            const isPlayersPiece = playerIsWhite.value
+              ? piece && piece === piece.toUpperCase()
+              : piece && piece !== '.' && piece === piece.toLowerCase();
+            if (isPlayersPiece) {
+              const sf = selectedFrom.value;
+              if (sf && sf.row === internal.row && sf.col === internal.col) {
+                selectedFrom.value = null;
+                validMoves.value = [];
+              } else {
+                ws.send(JSON.stringify({ type: 'getMoves', row: internal.row, col: internal.col }));
+              }
+              return;
+            }
+            selectedFrom.value = null;
+            validMoves.value = [];
+          }
+
+          function reset() {
+            ws.send(JSON.stringify({ type: 'reset' }));
+          }
+
+          const statusText = computed(() => {
+            if (aiThinking.value || !playerToMove.value) return 'AI thinking...';
+            if (status.value === 'white_wins')
+              return playerIsWhite.value ? 'Checkmate! You win.' : 'Checkmate! AI wins.';
+            if (status.value === 'black_wins')
+              return playerIsWhite.value ? 'Checkmate! AI wins.' : 'Checkmate! You win.';
+            if (status.value === 'stalemate') return 'Stalemate. Draw.';
+            if (inCheck.value) return 'Check! Your turn.';
+            return 'Your turn';
+          });
+
+          const statusClass = computed(() => {
+            if (aiThinking.value || (!playerToMove.value && status.value === 'ongoing'))
+              return 'thinking';
+            if (inCheck.value && status.value === 'ongoing') return 'check';
+            if (status.value !== 'ongoing') return 'gameover';
+            return '';
+          });
+
+          const capturedYou = computed(() =>
+            playerIsWhite.value ? capturedByWhite.value : capturedByBlack.value
+          );
+          const capturedAi = computed(() =>
+            playerIsWhite.value ? capturedByBlack.value : capturedByWhite.value
+          );
+          const scoreYou = computed(() =>
+            playerIsWhite.value ? scoreWhite.value : scoreBlack.value
+          );
+          const scoreAi = computed(() =>
+            playerIsWhite.value ? scoreBlack.value : scoreWhite.value
+          );
+
+          return {
+            board,
+            whiteTurn,
+            status,
+            lastMove,
+            inCheck,
+            selectedFrom,
+            validMoves,
+            aiThinking,
+            connected,
+            moveHistory,
+            moveListEl,
+            files,
+            ranks,
+            flatBoard,
+            movePairs,
+            advantage,
+            squareClass,
+            pieceImg,
+            handleClick,
+            reset,
+            statusText,
+            statusClass,
+            chooseSide,
+            sideSelected,
+            capturedYou,
+            capturedAi,
+            scoreYou,
+            scoreAi,
+          };
+        },
+      }).mount('#app');
+    </script>
+  </body>
+</html>

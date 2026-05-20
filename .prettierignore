@@ -1,0 +1,12 @@
+node_modules/
+coverage/
+dist/
+build/
+out/
+.cache/
+.parcel-cache/
+.npm/
+.pnpm-store/
+tmp/
+package-lock.json
+bkp/
