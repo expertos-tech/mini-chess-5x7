@@ -6,7 +6,9 @@ A fast-paced, compact chess variant played on a 5x8 grid. Perfect for quick tact
 
 ## Quick Start
 
-Passo 1) Clonar o projeto no git e instalar dependencias:
+### Step 1
+
+Clone the repository and install dependencies:
 
 ```bash
 git clone https://github.com/expertos-tech/simple-chess.git
@@ -14,21 +16,26 @@ cd simple-chess
 npm install
 ```
 
-Passo 2) Executar:
+### Step 2
 
-- 2.1) Modo console: `npm start`
-- 2.2) Modo browser: `npm run start:browser` e abrir [http://localhost:3000/](http://localhost:3000/)
+Run:
 
-Observacao: para rodar em um servidor, o servidor WebSocket precisa estar rodando e acessivel.
+- Console mode:
+  - `npm start`
+- Browser mode:
+  - `npm run start:browser`
+  - open [http://localhost:3000/](http://localhost:3000/)
+
+> Note: to run on a server, the WebSocket server must be running and reachable.
 
 ---
 
-## Documentacao
+## Documentation
 
-- [Arquitetura](docs/architecture.md)
-- [Decisoes de engenharia](docs/engineering-decisions.md)
-- [Regras](docs/rules.md)
-- [Testes](docs/testing.md)
+- [Architecture](docs/architecture.md)
+- [Engineering decisions](docs/engineering-decisions.md)
+- [Rules](docs/rules.md)
+- [Testing](docs/testing.md)
 
 ---
 

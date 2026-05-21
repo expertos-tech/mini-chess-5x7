@@ -3,6 +3,8 @@
 const fs = require('node:fs');
 const path = require('node:path');
 
+const DOCS_GITHUB_BASE = 'https://github.com/expertos-tech/simple-chess/blob/main/';
+
 function escapeHtml(s) {
   return String(s)
     .replaceAll('&', '&amp;')
@@ -16,6 +18,13 @@ function rewriteDocsPath(href) {
   if (!href) return href;
   if (typeof href !== 'string') return href;
   if (href.startsWith('docs/')) return href.slice('docs/'.length);
+  return href;
+}
+
+function rewriteDocsLink(href) {
+  if (!href) return href;
+  if (typeof href !== 'string') return href;
+  if (href.startsWith('docs/')) return `${DOCS_GITHUB_BASE}${href}`;
   return href;
 }
 
@@ -199,7 +208,7 @@ async function main() {
         if (href && typeof href === 'object') {
           return this.link(href.href, href.title, href.text);
         }
-        const safeHref = rewriteDocsPath(href);
+        const safeHref = rewriteDocsLink(href);
         const titleAttr = title ? ` title="${escapeHtml(title)}"` : '';
         return `<a href="${escapeHtml(safeHref)}"${titleAttr}>${text}</a>`;
       },
