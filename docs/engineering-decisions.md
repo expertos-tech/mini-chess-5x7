@@ -75,3 +75,19 @@ Rationale:
 
 - Rules and initial position have no queens.
 - The engine does not generate en passant moves.
+
+## 007 - Official board size changed to 5x7
+
+Decision:
+The game is now officially a 5x7 chess variant.
+
+Rationale:
+The previous 5x8 setup with two rooks per side made rooks too dominant on a compact board. The 5x7 setup with one rook, one bishop, two knights and the king centered between the knights creates a more tactical and balanced game.
+
+Consequences:
+
+- Board rank range is now 1-7.
+- Initial board has 7 rows.
+- White back rank is B N K N R.
+- Black back rank is r n k n b.
+- Promotion rows are 0 for White and ROWS - 1 for Black.

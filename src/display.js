@@ -1,3 +1,5 @@
+const { ROWS, COLS } = require('./constants');
+
 // Unicode block sprites: exactly 9 chars wide x 3 rows tall
 const SPRITES = {
   K: ['    ╬    ', '   ███   ', '  █████  '],
@@ -31,7 +33,7 @@ function isHL(row, col, last) {
 }
 
 const LEGEND = [' K = Rei   ', ' R = Torre ', ' B = Bispo ', ' N = Cavalo', ' P = Peão  '];
-const LEGEND_START = 3; // attach starting at rank 8 middle line
+const LEGEND_START = 3; // attach starting at rank 7 middle line
 
 function printBoard(board, lastMove = null, opts = {}) {
   const { flip = false } = opts;
@@ -42,13 +44,13 @@ function printBoard(board, lastMove = null, opts = {}) {
   emit(fileHeader);
   emit(`${BORDERS}${TOP}${C.reset}`);
 
-  const rowIndices = flip ? [7, 6, 5, 4, 3, 2, 1, 0] : [0, 1, 2, 3, 4, 5, 6, 7];
+  const rowIndices = flip ? [...Array(ROWS).keys()].reverse() : [...Array(ROWS).keys()];
   for (const row of rowIndices) {
-    const rank = flip ? row + 1 : 8 - row;
+    const rank = flip ? row + 1 : ROWS - row;
     for (let li = 0; li < 3; li++) {
       const prefix = li === 1 ? ` ${rank} │` : `   │`;
       let line = prefix;
-      const colIndices = flip ? [4, 3, 2, 1, 0] : [0, 1, 2, 3, 4];
+      const colIndices = flip ? [...Array(COLS).keys()].reverse() : [...Array(COLS).keys()];
       for (const col of colIndices) {
         const piece = board[row][col];
         const hl = isHL(row, col, lastMove);
@@ -63,7 +65,7 @@ function printBoard(board, lastMove = null, opts = {}) {
       }
       emit(line);
     }
-    const isLast = flip ? row === 0 : row === 7;
+    const isLast = flip ? row === 0 : row === ROWS - 1;
     emit(`${BORDERS}${!isLast ? SEP : BOT}${C.reset}`);
   }
 
@@ -76,10 +78,10 @@ function printBoard(board, lastMove = null, opts = {}) {
 
   if (lastMove) {
     const cols = 'abcde';
-    const fromFile = flip ? cols[4 - lastMove.fromCol] : cols[lastMove.fromCol];
-    const fromRank = flip ? lastMove.fromRow + 1 : 8 - lastMove.fromRow;
-    const toFile = flip ? cols[4 - lastMove.toCol] : cols[lastMove.toCol];
-    const toRank = flip ? lastMove.toRow + 1 : 8 - lastMove.toRow;
+    const fromFile = flip ? cols[COLS - 1 - lastMove.fromCol] : cols[lastMove.fromCol];
+    const fromRank = flip ? lastMove.fromRow + 1 : ROWS - lastMove.fromRow;
+    const toFile = flip ? cols[COLS - 1 - lastMove.toCol] : cols[lastMove.toCol];
+    const toRank = flip ? lastMove.toRow + 1 : ROWS - lastMove.toRow;
     const from = `${fromFile}${fromRank}`;
     const to = `${toFile}${toRank}`;
     console.log(`\n  \x1b[0;37mÚltimo movimento:\x1b[0m \x1b[1;37m${from} -> ${to}\x1b[0m`);

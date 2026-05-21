@@ -12,10 +12,12 @@
 
 ## Data model
 
-- Board is an 8x5 matrix of single-character strings.
+- Board is a 7x5 matrix of single-character strings.
+- `ROWS = 7`
+- `COLS = 5`
 - `.` is empty.
 - Uppercase pieces are White, lowercase pieces are Black.
-- Coordinates use files `a-e` and ranks `1-8`.
+- Coordinates use files `a-e` and ranks `1-7`.
 
 ## Browser flow
 

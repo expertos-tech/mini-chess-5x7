@@ -1,7 +1,5 @@
 const { EMPTY, isWhite, isBlack, cloneBoard, applyMove } = require('./board');
-
-const ROWS = 8;
-const COLS = 5;
+const { ROWS, COLS } = require('./constants');
 
 function inBounds(row, col) {
   return row >= 0 && row < ROWS && col >= 0 && col < COLS;
@@ -19,7 +17,7 @@ function isEnemy(board, row, col, whiteTurn) {
 
 function addPawnMoves(board, row, col, whiteTurn, moves) {
   const dir = whiteTurn ? -1 : 1;
-  const promRow = whiteTurn ? 0 : 7;
+  const promRow = whiteTurn ? 0 : ROWS - 1;
   const promos = whiteTurn ? ['R'] : ['r'];
   const nr = row + dir;
 

@@ -1,5 +1,5 @@
 const readline = require('readline');
-const { createBoard, applyMove } = require('./board');
+const { ROWS, COLS, createBoard, applyMove } = require('./board');
 const { getLegalMoves, isInCheck } = require('./moves');
 const { getAiMove } = require('./ai');
 const { getStatus } = require('./game');
@@ -15,28 +15,28 @@ function parseMovePerspective(str, playerIsWhite) {
 
   if (fromFile === undefined || toFile === undefined) return null;
   if (Number.isNaN(fromRank) || Number.isNaN(toRank)) return null;
-  if (fromRank < 1 || fromRank > 8 || toRank < 1 || toRank > 8) return null;
+  if (fromRank < 1 || fromRank > ROWS || toRank < 1 || toRank > ROWS) return null;
 
   if (playerIsWhite) {
-    return { fromRow: 8 - fromRank, fromCol: fromFile, toRow: 8 - toRank, toCol: toFile };
+    return { fromRow: ROWS - fromRank, fromCol: fromFile, toRow: ROWS - toRank, toCol: toFile };
   }
   return {
     fromRow: fromRank - 1,
-    fromCol: 4 - fromFile,
+    fromCol: COLS - 1 - fromFile,
     toRow: toRank - 1,
-    toCol: 4 - toFile,
+    toCol: COLS - 1 - toFile,
   };
 }
 
 function moveToStrPerspective(move, playerIsWhite) {
   const cols = 'abcde';
   if (playerIsWhite) {
-    const from = `${cols[move.fromCol]}${8 - move.fromRow}`;
-    const to = `${cols[move.toCol]}${8 - move.toRow}`;
+    const from = `${cols[move.fromCol]}${ROWS - move.fromRow}`;
+    const to = `${cols[move.toCol]}${ROWS - move.toRow}`;
     return `${from}${to}${move.promotion || ''}`;
   }
-  const from = `${cols[4 - move.fromCol]}${move.fromRow + 1}`;
-  const to = `${cols[4 - move.toCol]}${move.toRow + 1}`;
+  const from = `${cols[COLS - 1 - move.fromCol]}${move.fromRow + 1}`;
+  const to = `${cols[COLS - 1 - move.toCol]}${move.toRow + 1}`;
   return `${from}${to}${move.promotion || ''}`;
 }
 
@@ -51,7 +51,7 @@ async function main() {
   const rl = readline.createInterface({ input: process.stdin, output: process.stdout });
   const ask = (question) => new Promise((resolve) => rl.question(question, resolve));
 
-  console.log('=== Simple Chess 5x8 ===');
+  console.log('=== Simple Chess 5x7 ===');
   const sideAnswer = (await ask('Play as (w) White or (b) Black? [w]: ')).trim().toLowerCase();
   const playerIsWhite = sideAnswer !== 'b' && sideAnswer !== 'black';
   console.log(`You play ${playerIsWhite ? 'White' : 'Black'}. Enter moves like: a2a3, e1e2`);

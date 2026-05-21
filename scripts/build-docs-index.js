@@ -232,7 +232,7 @@ async function main() {
   );
 
   const htmlBody = marked.parse(readmeMd);
-  const html = buildHtml({ title: 'Simple Chess 5x8', bodyHtml: htmlBody });
+  const html = buildHtml({ title: 'Simple Chess 5x7', bodyHtml: htmlBody });
 
   fs.mkdirSync(path.dirname(outPath), { recursive: true });
   fs.writeFileSync(outPath, html, 'utf8');

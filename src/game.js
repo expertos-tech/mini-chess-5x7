@@ -1,4 +1,5 @@
 const { getLegalMoves, isInCheck } = require('./moves');
+const { ROWS } = require('./constants');
 
 function parseMove(str) {
   if (!str || str.length < 4) return null;
@@ -10,9 +11,9 @@ function parseMove(str) {
 
   if (fromCol === undefined || toCol === undefined) return null;
   if (isNaN(fromRank) || isNaN(toRank)) return null;
-  if (fromRank < 1 || fromRank > 8 || toRank < 1 || toRank > 8) return null;
+  if (fromRank < 1 || fromRank > ROWS || toRank < 1 || toRank > ROWS) return null;
 
-  return { fromRow: 8 - fromRank, fromCol, toRow: 8 - toRank, toCol };
+  return { fromRow: ROWS - fromRank, fromCol, toRow: ROWS - toRank, toCol };
 }
 
 // Returns 'ongoing' | 'white_wins' | 'black_wins' | 'stalemate'

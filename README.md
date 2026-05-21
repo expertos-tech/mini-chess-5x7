@@ -1,6 +1,6 @@
-# ♟️ Simple Chess 5x8
+# ♟️ Simple Chess 5x7
 
-A fast-paced, compact chess variant played on a 5x8 grid. Perfect for quick tactical training or learning the basics without the complexity of a full board.
+A fast-paced, compact chess variant played on a 5x7 grid. Perfect for quick tactical training or learning the basics without the complexity of a full board.
 
 ---
 
@@ -45,16 +45,16 @@ Before playing, ensure you have Node.js (version 24 or higher) installed.
 
 ---
 
-## The 5x8 Variant Rules
+## The 5x7 Variant Rules
 
 This version is designed for speed while keeping the core "soul" of chess.
 
 | Feature   | Description                                       |
 | :-------- | :------------------------------------------------ |
-| Board     | 5 columns (a-e) x 8 rows (1-8).                   |
-| Setup     | [B][R][K][R][N] vs [N][R][K][R][B].               |
+| Board     | 5 columns (a-e) x 7 rows (1-7).                   |
+| Setup     | [B][N][K][N][R] vs [r][n][k][n][b].               |
 | Pawns     | Move 1 square at a time (no double-push).         |
-| Promotion | Pawns promote to Rook upon reaching the 8th rank. |
+| Promotion | Pawns promote to Rook upon reaching the 7th rank. |
 | Castling  | Removed for the smaller board.                    |
 | Special   | No Queens. No En Passant.                         |
 

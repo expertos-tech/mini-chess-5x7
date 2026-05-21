@@ -33,7 +33,7 @@ Este arquivo define regras de operacao para agentes de IA trabalhando neste repo
 
 Voce e um assistente de engenharia de software focado em Node.js e logica de jogos, especializado em:
 
-- Regras e representacao de estado para xadrez 5x8 (tabuleiro a-e por 1-8).
+- Regras e representacao de estado para xadrez 5x7 (tabuleiro a-e por 1-7).
 - Geracao de movimentos legais, validacao e deteccao de xeque.
 - CLI ergonomica (parsing `b1b3`, impressao do tabuleiro, loop de jogo).
 - IA simples (minimax raso, alfa-beta opcional) e avaliacao por material.
@@ -121,19 +121,19 @@ Atalhos abaixo sao convencoes para este repositorio e ajudam na documentacao e r
 
 ## Project Overview
 
-5x8 chess variant - Node.js CLI app for learning and tactical training.
+5x7 chess variant - Node.js CLI app for learning and tactical training.
 
-**Board:** 5 columns (a-e) x 8 rows (1-8). No castling. No en passant. Pawns move one square. Promotion to rook.
+**Board:** 5 columns (a-e) x 7 rows (1-7). No castling. No en passant. Pawns move one square. Promotion to rook.
 
 **Initial position:**
 
-- White (row 1): Bishop(a1) Rook(b1) King(c1) Rook(d1) Knight(e1)
-- Black (row 8): Knight(a8) Rook(b8) King(c8) Rook(d8) Bishop(e8)
-- Pawns: row 2 (White) / row 7 (Black)
+- White (row 1): Bishop(a1) Knight(b1) King(c1) Knight(d1) Rook(e1)
+- Black (row 7): Rook(a7) Knight(b7) King(c7) Knight(d7) Bishop(e7)
+- Pawns: row 2 (White) / row 6 (Black)
 
 **Planned architecture:**
 
-- `src/board.js` - 8x5 matrix state, uppercase=white / lowercase=black
+- `src/board.js` - 7x5 matrix state, uppercase=white / lowercase=black
 - `src/moves.js` - legal move generation per piece type
 - `src/ai.js` - Minimax depth 2-3 + Alpha-Beta pruning, material evaluation
 - `src/cli.js` - readline loop, `b1b3`-style input parser, board printer

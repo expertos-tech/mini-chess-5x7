@@ -1,11 +1,12 @@
 const { cloneBoard, applyMove, isWhite, EMPTY } = require('./board');
+const { ROWS, COLS } = require('./constants');
 const { getLegalMoves, isInCheck } = require('./moves');
 const { AI_PIECE_VALUES } = require('./pieces');
 
 function evaluate(board) {
   let score = 0;
-  for (let r = 0; r < 8; r++) {
-    for (let c = 0; c < 5; c++) {
+  for (let r = 0; r < ROWS; r++) {
+    for (let c = 0; c < COLS; c++) {
       const p = board[r][c];
       if (p === EMPTY) continue;
       const v = AI_PIECE_VALUES[p.toLowerCase()] || 0;
