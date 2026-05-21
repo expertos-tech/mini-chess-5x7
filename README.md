@@ -9,7 +9,7 @@ A fast-paced, compact chess variant played on a 5x8 grid. Perfect for quick tact
 Passo 1) Clonar o projeto no git e instalar dependencias:
 
 ```bash
-git clone <repo-url>
+git clone https://github.com/expertos-tech/simple-chess.git
 cd simple-chess
 npm install
 ```
