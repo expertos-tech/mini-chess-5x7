@@ -42,6 +42,7 @@ This project follows a semantic and functional commit pattern. Commits must be w
   - `test`: Adding or updating tests.
 
 **Example:**
+
 ```txt
 feat: update initial board setup
 - Change pieces to B-N-K-N-R formation
